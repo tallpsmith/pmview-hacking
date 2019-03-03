@@ -16,11 +16,11 @@
 <div id="app">
     <vgl-renderer antialias style="height: 100vh;">
         <vgl-scene>
-            <vgl-text-geometry name="disk" font="helv.json" :text="disk" ></vgl-text-geometry>
+            <vgl-text-geometry name="disk" font="helv.json" :height="disk.label.height" :text="disk.label.text"></vgl-text-geometry>
             <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
             <vgl-mesh geometry="disk" material="std" position="-750 0 0"></vgl-mesh>
 
-            <vgl-box-geometry name="box" :width="width" :height="height" :depth="depth"></vgl-box-geometry>
+            <vgl-box-geometry name="box" :width="disk.box.width" :height="disk.box.height" :depth="disk.box.depth"></vgl-box-geometry>
             <vgl-mesh geometry="box" material="std" position="0 0 0"></vgl-mesh>
 
 
@@ -31,10 +31,7 @@
     </vgl-renderer>
 
     <aside class="control-panel">
-        <label>Text<input type="text" v-model="disk"></label>
-        <label>Width<input v-model="width" type="range"></label>
-        <label>Height<input v-model="height" type="range"></label>
-        <label>Depth<input v-model="depth" type="range"></label>
+        <label>Disk Utilization<input v-model="disk.box.height" type="range"></label>
     </aside>
 </div>
 
@@ -42,10 +39,20 @@
     new Vue({
         el: '#app',
         data: {
-            disk: '/dev/sda',
-            width: 100,
-            height: 100,
-            depth: 100,
+            disk: {
+                label: {
+                    height: 5,
+                    text: '/dev/sda',
+                },
+                box: {
+                    width: 100,
+                    height: 100,
+                    depth: 100,
+                }
+
+            },
+
+
         },
     });
 </script>
