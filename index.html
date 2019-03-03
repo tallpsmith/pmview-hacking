@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>pmview hacking</title>
+    <script type="text/javascript" src="node_modules/three/build/three.js"></script>
+    <script type="text/javascript" src="node_modules/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="node_modules/vue-gl/dist/vue-gl.js"></script>
+    <script>
+        Object.keys(VueGL).forEach(name => {
+            Vue.component(name, VueGL[name]);
+        });
+    </script>
+</head>
+
+<body>
+<div id="app">
+    <vgl-renderer antialias style="height: 100vh;">
+        <vgl-scene>
+            <vgl-text-geometry name="disk" font="helv.json" :text="disk" ></vgl-text-geometry>
+            <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
+            <vgl-mesh geometry="disk" material="std" position="-750 0 0"></vgl-mesh>
+
+            <vgl-box-geometry name="box" :width="width" :height="height" :depth="depth"></vgl-box-geometry>
+            <vgl-mesh geometry="box" material="std" position="0 0 0"></vgl-mesh>
+
+
+            <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
+            <vgl-directional-light position="0 1 2"></vgl-directional-light>
+        </vgl-scene>
+        <vgl-perspective-camera orbit-position="1000 1.3 0.3"></vgl-perspective-camera>
+    </vgl-renderer>
+
+    <aside class="control-panel">
+        <label>Text<input type="text" v-model="disk"></label>
+        <label>Width<input v-model="width" type="range"></label>
+        <label>Height<input v-model="height" type="range"></label>
+        <label>Depth<input v-model="depth" type="range"></label>
+    </aside>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            disk: '/dev/sda',
+            width: 100,
+            height: 100,
+            depth: 100,
+        },
+    });
+</script>
+</body>
+</html>
