@@ -14,45 +14,64 @@
 
 <body>
 <div id="app">
+
     <vgl-renderer antialias style="height: 100vh;">
         <vgl-scene>
-            <vgl-text-geometry name="disk" font="helv.json" :height="disk.label.height" :text="disk.label.text"></vgl-text-geometry>
+            <vgl-axes-helper :size="axishelper.size"></vgl-axes-helper>
+            <vgl-grid-helper
+                    size="5000"
+                    divisions="25"
+            >
+            </vgl-grid-helper>
+
+            <template v-for="(disk,index) in disks">
+                <vgl-text-geometry :name="disk.text" font="helv.json" :height="disk.lheight"
+                                   :text="disk.text" ></vgl-text-geometry>
+                <vgl-mesh :geometry="disk.text" material="std" :position="diskOffset(index)"></vgl-mesh>
+
+
+                <vgl-box-geometry :name="`box.${index}`" :width="disk.width" :height="disk.height"
+                                  :depth="disk.depth"></vgl-box-geometry>
+                <vgl-mesh :geometry="`box.${index}`" material="std" :position="diskOffset(index)"></vgl-mesh>
+            </template>
+
             <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
-            <vgl-mesh geometry="disk" material="std" position="-750 0 0"></vgl-mesh>
-
-            <vgl-box-geometry name="box" :width="disk.box.width" :height="disk.box.height" :depth="disk.box.depth"></vgl-box-geometry>
-            <vgl-mesh geometry="box" material="std" position="0 0 0"></vgl-mesh>
-
-
             <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
             <vgl-directional-light position="0 1 2"></vgl-directional-light>
         </vgl-scene>
         <vgl-perspective-camera orbit-position="1000 1.3 0.3"></vgl-perspective-camera>
     </vgl-renderer>
 
-    <aside class="control-panel">
-        <label>Disk Utilization<input v-model="disk.box.height" type="range"></label>
-    </aside>
 </div>
 
 <script>
     new Vue({
         el: '#app',
+
         data: {
-            disk: {
-                label: {
-                    height: 5,
-                    text: '/dev/sda',
-                },
-                box: {
-                    width: 100,
-                    height: 100,
-                    depth: 100,
-                }
+            diskOffset: function (index) {
+                return '0 0 ' +  (250 * index) + '';
 
             },
-
-
+            axishelper: {
+                size: 500
+            },
+            disks: [
+                {
+                    "lheight": 5,
+                    "text": '/dev/sda',
+                    "width": 100,
+                    "height": 100,
+                    "depth": 100,
+                },
+                {
+                    "lheight": 5,
+                    "text": '/dev/sdb',
+                    "width": 100,
+                    "height": 100,
+                    "depth": 100,
+                }
+            ]
         },
     });
 </script>
