@@ -25,9 +25,9 @@
             </vgl-grid-helper>
 
             <template v-for="(disk,index) in disks">
-                <vgl-text-geometry :name="disk.text" font="helv.json" :height="disk.lheight"
+                <vgl-text-geometry :name="disk.text" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="disk.lheight"
                                    :text="disk.text" ></vgl-text-geometry>
-                <vgl-mesh :geometry="disk.text" material="std" :position="diskOffset(index)"></vgl-mesh>
+                <vgl-mesh :geometry="disk.text" material="std" :position="diskOffset(index)" rotation="-1.5708 0 0"></vgl-mesh>
 
 
                 <vgl-box-geometry :name="`box.${index}`" :width="disk.width" :height="disk.height"
@@ -61,7 +61,7 @@
                     "lheight": 5,
                     "text": '/dev/sda',
                     "width": 100,
-                    "height": 100,
+                    "height": 10,
                     "depth": 100,
                 },
                 {
@@ -70,10 +70,19 @@
                     "width": 100,
                     "height": 100,
                     "depth": 100,
+                },
+                {
+                    "lheight": 5,
+                    "text": '/dev/sdc',
+                    "width": 100,
+                    "height": 50,
+                    "depth": 100,
                 }
             ]
         },
     });
+
+
 </script>
 </body>
 </html>
