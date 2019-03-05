@@ -15,8 +15,8 @@
 <body>
 <div id="app">
 
-    <vgl-renderer antialias style="height: 100vh;">
-        <vgl-scene>
+    <vgl-renderer ref="renderer" antialias style="height: 100vh;">
+        <vgl-scene ref="scene">
             <vgl-axes-helper :size="axishelper.size"></vgl-axes-helper>
             <vgl-grid-helper
                     size="5000"
@@ -25,36 +25,43 @@
             </vgl-grid-helper>
 
             <template v-for="(disk,index) in disks">
-                <vgl-text-geometry :name="disk.text" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="disk.lheight"
-                                   :text="disk.text" ></vgl-text-geometry>
-                <vgl-mesh :geometry="disk.text" material="std" :position="diskOffset(index)" rotation="-1.5708 0 0"></vgl-mesh>
-
+                <vgl-text-geometry :name="disk.text"
+                                   font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json"
+                                   :height="disk.lheight"
+                                   :text="disk.text"></vgl-text-geometry>
 
                 <vgl-box-geometry :name="`box.${index}`" :width="disk.width" :height="disk.height"
-                                  :depth="disk.depth"></vgl-box-geometry>
-                <vgl-mesh :geometry="`box.${index}`" material="std" :position="diskOffset(index)"></vgl-mesh>
+                                  :depth="disk.depth"  />
+
+                <vgl-group :name="`group.${index}`" :position="offsetDisk(index)">
+                    <vgl-mesh :geometry="disk.text" material="std" rotation="-1.5708 0 0"></vgl-mesh>
+                    <vgl-mesh :geometry="`box.${index}`" material="std" position="700 0 -50" :rotation="calculateRotation()"></vgl-mesh>
+                </vgl-group>
             </template>
 
             <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
             <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
             <vgl-directional-light position="0 1 2"></vgl-directional-light>
         </vgl-scene>
-        <vgl-perspective-camera orbit-position="1000 1.3 0.3"></vgl-perspective-camera>
+        <vgl-perspective-camera orbit-position="1200 1.3 0.3"></vgl-perspective-camera>
     </vgl-renderer>
 
 </div>
 
 <script>
-    new Vue({
+
+    var vue = new Vue({
         el: '#app',
-
         data: {
-            diskOffset: function (index) {
-                return '0 0 ' +  (250 * index) + '';
-
+            rotator:  0.2,
+            calculateRotation: function (){
+              return this.rotator + " 0 0";
             },
             axishelper: {
                 size: 500
+            },
+            offsetDisk: function (index){
+                  return "0 0 " + (index * 200) + "  ";
             },
             disks: [
                 {
@@ -81,6 +88,18 @@
             ]
         },
     });
+
+    function renderScene(){
+        var rotator = vue.rotator;
+        vue.rotator += Math.abs(Math.PI / 100);
+        if(vue.rotator > Math.PI){
+             vue.rotator = 0;
+         }
+         requestAnimationFrame(renderScene);
+         vue.$refs.renderer.render();
+    };
+    renderScene();
+
 
 
 </script>
