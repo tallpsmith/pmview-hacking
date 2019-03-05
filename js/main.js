@@ -13,72 +13,84 @@ Object.keys(VueGL).forEach(name => {
 });
 
 var vue = new Vue({
-    el: '#app',
-    methods: {
-        calculateBoxPosition: function (disk) {
-            return `750 ${disk.height / 2} 0`;
-        },
-        calculateRotation: function () {
-            return this.rotator + " 0 0";
-        },
-        offsetDisk: function (index) {
-            return "0 0 " + (index * 200) + "  ";
-        },
-        cameraPosition: function () {
-            //return "`${camera.x} ${camera.y} ${camera.z}`"
-            //console.log("`${this.camera.x} ${this.camera.y} ${this.camera.z}`");
-            // return "1200 1.3 0.3";
-            return this.camera.x + " " + this.camera.y + " " + this.camera.z;
-        },
-    },
-    data: {
-        rotator: 0.0,
-        axishelper: {
-            size: 500
-        },
-        camera: {
-            x: 1200,
-            y: 1.3,
-            z: 0.3,
-        },
-        disks: [
-            {
-                "lheight": 5,
-                "text": '/dev/sda',
-                "width": 100,
-                "height": 10,
-                "depth": 100,
+        el: '#app',
+        methods: {
+            calculateBoxPosition: function (disk) {
+                return `750 ${disk.height / 2} 0`;
             },
-            {
-                "lheight": 5,
-                "text": '/dev/sdb',
-                "width": 100,
-                "height": 100,
-                "depth": 100,
+            calculateRotation: function () {
+                return this.rotator + " 0 0";
             },
-            {
-                "lheight": 5,
-                "text": '/dev/sdc',
-                "width": 100,
-                "height": 50,
-                "depth": 100,
-            }
-        ]
-    },
-});
+            offsetDisk: function (index) {
+                return "0 0 " + (index * 200) + "  ";
+            },
+            cameraPosition: function () {
+                return this.camera.orbitPosition.distance + " " + this.camera.orbitPosition.phi + " " + this.camera.orbitPosition.theta;
+            },
+            cameraTarget: function () {
+                return this.camera.orbitTarget.x + " " + this.camera.orbitTarget.y + " " + this.camera.orbitTarget.z;
+            },
+        },
+        data: {
+            rotator: 0.0,
+            axishelper: {
+                size: 500
+            },
+            camera: {
+                orbitTarget: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                orbitPosition: {
+                    distance: 1500,
+                    phi: 1.3,
+                    theta: 0.3,
+                }
+            },
+            disks: [
+                {
+                    "lheight": 5,
+                    "text": '/dev/sda',
+                    "width": 100,
+                    "height": 10,
+                    "depth": 100,
+                },
+                {
+                    "lheight": 5,
+                    "text": '/dev/sdb',
+                    "width": 100,
+                    "height": 100,
+                    "depth": 100,
+                },
+                {
+                    "lheight": 5,
+                    "text": '/dev/sdc',
+                    "width": 100,
+                    "height": 50,
+                    "depth": 100,
+                }
+            ]
+        },
+    })
+;
 
 autoPlay(true);
 
-let updateCallback = ({height}) =>   {
+let updateCallback = ({height}) => {
     vue.disks[0].height = height;
 };
 
-var tween = new Tween({height: 0})
+const targetSpherical = new three.Spherical(0, 1.3, 3.14 * 2);
+var cameraTween = new Tween(vue.camera.orbitPosition).to(targetSpherical, 5000);
+
+var boxTween = new Tween({height: 0})
     .to({height: 100}, 1000)
     .on('update', updateCallback)
 ;
 
-tween.repeat(2).yoyo(true).start()
+boxTween.repeat(2).yoyo(true).start();
+cameraTween.repeat(3).start();
 
 function renderScene() {
     requestAnimationFrame(renderScene);

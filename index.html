@@ -37,7 +37,7 @@
             <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
             <vgl-directional-light position="0 1 2"></vgl-directional-light>
         </vgl-scene>
-        <vgl-perspective-camera ref="camera" :orbit-position="cameraPosition()"></vgl-perspective-camera>
+        <vgl-perspective-camera ref="camera" :orbit-target="cameraTarget()" :orbit-position="cameraPosition()"></vgl-perspective-camera>
     </vgl-renderer>
 
 </div>
