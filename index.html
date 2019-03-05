@@ -35,7 +35,8 @@
 
                 <vgl-group :name="`group.${index}`" :position="offsetDisk(index)">
                     <vgl-mesh :geometry="disk.text" material="std" rotation="-1.5708 0 0"></vgl-mesh>
-                    <vgl-mesh :geometry="`box.${index}`" material="std" position="700 0 -50" :rotation="calculateRotation()"></vgl-mesh>
+                    <vgl-mesh :geometry="`box.${index}`" material="std" :position="calculateBoxPosition(disk)"
+                              :rotation="calculateRotation()"></vgl-mesh>
                 </vgl-group>
             </template>
 
@@ -52,16 +53,22 @@
 
     var vue = new Vue({
         el: '#app',
+        methods: {
+            calculateBoxPosition: function(disk) {
+                return `750 ${disk.height/2} 0`;
+            },
+        },
         data: {
-            rotator:  0.2,
-            calculateRotation: function (){
-              return this.rotator + " 0 0";
+            rotator: 0.0,
+
+            calculateRotation: function () {
+                return this.rotator + " 0 0";
             },
             axishelper: {
                 size: 500
             },
-            offsetDisk: function (index){
-                  return "0 0 " + (index * 200) + "  ";
+            offsetDisk: function (index) {
+                return "0 0 " + (index * 200) + "  ";
             },
             disks: [
                 {
@@ -89,17 +96,17 @@
         },
     });
 
-    function renderScene(){
-        var rotator = vue.rotator;
-        vue.rotator += Math.abs(Math.PI / 100);
-        if(vue.rotator > Math.PI){
-             vue.rotator = 0;
-         }
-         requestAnimationFrame(renderScene);
-         vue.$refs.renderer.render();
+    function renderScene() {
+        vue.disks.forEach(function (disk) {
+            disk.height++;
+            if (disk.height > 200) {
+                disk.height = 0;
+            }
+        })
+        requestAnimationFrame(renderScene);
+        vue.$refs.renderer.render();
     };
     renderScene();
-
 
 
 </script>
