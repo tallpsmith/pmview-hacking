@@ -31,7 +31,7 @@
                                    :text="disk.text"></vgl-text-geometry>
 
                 <vgl-box-geometry :name="`box.${index}`" :width="disk.width" :height="disk.height"
-                                  :depth="disk.depth"  />
+                                  :depth="disk.depth"/>
 
                 <vgl-group :name="`group.${index}`" :position="offsetDisk(index)">
                     <vgl-mesh :geometry="disk.text" material="std" rotation="-1.5708 0 0"></vgl-mesh>
@@ -54,21 +54,20 @@
     var vue = new Vue({
         el: '#app',
         methods: {
-            calculateBoxPosition: function(disk) {
-                return `750 ${disk.height/2} 0`;
+            calculateBoxPosition: function (disk) {
+                return `750 ${disk.height / 2} 0`;
+            },
+            calculateRotation: function () {
+                return this.rotator + " 0 0";
+            },
+            offsetDisk: function (index) {
+                return "0 0 " + (index * 200) + "  ";
             },
         },
         data: {
             rotator: 0.0,
-
-            calculateRotation: function () {
-                return this.rotator + " 0 0";
-            },
             axishelper: {
                 size: 500
-            },
-            offsetDisk: function (index) {
-                return "0 0 " + (index * 200) + "  ";
             },
             disks: [
                 {
