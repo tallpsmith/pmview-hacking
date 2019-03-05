@@ -6,7 +6,6 @@ var VueGL= require('vue-gl');
 Object.keys(VueGL).forEach(name => {
     Vue.component(name, VueGL[name]);
 });
-console.log("Boop");
 var vue = new Vue({
     el: '#app',
     methods: {
@@ -19,11 +18,22 @@ var vue = new Vue({
         offsetDisk: function (index) {
             return "0 0 " + (index * 200) + "  ";
         },
+        cameraPosition: function(){
+          //return "`${camera.x} ${camera.y} ${camera.z}`"
+            //console.log("`${this.camera.x} ${this.camera.y} ${this.camera.z}`");
+            // return "1200 1.3 0.3";
+            return this.camera.x + " " + this.camera.y + " " + this.camera.z;
+        },
     },
     data: {
         rotator: 0.0,
         axishelper: {
             size: 500
+        },
+        camera: {
+            x: 1200,
+            y: 1.3,
+            z: 0.3,
         },
         disks: [
             {
