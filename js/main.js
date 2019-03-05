@@ -58,7 +58,7 @@ function renderScene() {
             disk.height = 0;
         }
     })
-    //requestAnimationFrame(renderScene);
-    //vue.$refs.renderer.render();
+    requestAnimationFrame(renderScene);
+    vue.$refs.renderer.render();
 };
 renderScene();
