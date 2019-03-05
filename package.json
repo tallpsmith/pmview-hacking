@@ -4,6 +4,8 @@
   "description": "PCP pmview in JS hacking",
   "main": "index.js",
   "scripts": {
+    "build": "node node_modules/browserify/bin/cmd.js js/main.js -o static/bundle.js",
+    "watch": "node node_modules/watchify/bin/cmd.js js/main.js -o static/bundle.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Paul Smith",
@@ -12,5 +14,10 @@
     "three": "^0.102.1",
     "vue": "^2.6.8",
     "vue-gl": "^0.11.1"
+  },
+  "devDependencies": {
+    "browserify": "^16.2.3",
+    "require.js": "^1.0.0",
+    "watchify": "^3.11.1"
   }
 }
