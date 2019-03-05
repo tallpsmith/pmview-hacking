@@ -69,13 +69,16 @@ var vue = new Vue({
 
 autoPlay(true);
 
-const tween = new Tween(vue.disks[0])
-    .to({height:100}, 1000)
-    .on('update', function () {
-            renderScene();
-        }
-    )
-    .start();
+let updateCallback = ({height}) =>   {
+    vue.disks[0].height = height;
+};
+
+var tween = new Tween({height: 0})
+    .to({height: 100}, 1000)
+    .on('update', updateCallback)
+;
+
+tween.repeat(2).yoyo(true).start()
 
 function renderScene() {
     requestAnimationFrame(renderScene);
