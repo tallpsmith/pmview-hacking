@@ -118,19 +118,6 @@ var vue = new Vue({
 
 autoPlay(true);
 
-let updateCallback = ({height}) => {
-    vue.disks[0].height = height;
-};
-
-
-var boxTween = new Tween({height: 0})
-    .to({height: 100}, 1000)
-    .on('update', updateCallback)
-;
-
-//boxTween.repeat(2).yoyo(true).start();
-
-
 function renderScene() {
     requestAnimationFrame(renderScene);
     vue.$refs.renderer.render();
