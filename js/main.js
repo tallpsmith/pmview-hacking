@@ -28,34 +28,39 @@ Vue.component('pcp-disk', {
     },
     template: '<vgl-group :position="offsetDisk(index)">\n\t<vgl-text-geometry :name="computeTextId(index)" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="label.height" :text="diskName"></vgl-text-geometry>\n' +
         '<vgl-mesh :geometry="computeTextId(index)" material="std" rotation="-1.5708 0 0"></vgl-mesh>\n' +
-        ' <vgl-box-geometry :name="computeBoxId(index)" :width="computeDiskWidth()" :height="computeDiskHeight()" :depth="computeDiskDepth()"/>' +
-        '\'<vgl-mesh :geometry="computeBoxId(index)" material="std" :position=computeBoxPosition()></vgl-mesh>\\' +
+        ' <vgl-box-geometry :name="computeBoxId(index)" :width="diskWidth" :height="diskHeight()" :depth="diskDepth"/>' +
+        '\'<vgl-mesh :geometry="computeBoxId(index)" material="std" :position=boxPosition()></vgl-mesh>\\' +
         '</vgl-group>',
-    methods: {
-        computeTextId: function(index) {
-            return `text.${index}`;
+
+    computed: {
+        diskWidth: function () {
+            return 100;
         },
-        computeBoxId: function(index) {
-            return "`box." + index;
+        diskDepth: function () {
+            return 100;
         },
 
-        computeDiskWidth: function () {
-            return 100;
+    },
+    methods: {
+        computeTextId: function (index) {
+            return `text.${index}`;
         },
-        computeDiskDepth: function () {
-            return 100;
-        },
-        computeDiskHeight: function () {
-            const maxHeight = 500;
-            return this.utilization * maxHeight;
-        },
-        computeBoxPosition: function () {
-            diskHeight = this.computeDiskHeight() /2 ;
-            return `750 ${diskHeight} 0`;
+        computeBoxId: function (index) {
+            return "`box." + index;
         },
         offsetDisk: function (index) {
             return "0 0 " + (index * 200) + "  ";
         },
+
+        diskHeight: function () {
+            const maxHeight = 500;
+            return this.utilization * maxHeight;
+        },
+        boxPosition: function () {
+            thediskHeight = this.diskHeight() / 2;
+            return `750 ${thediskHeight} 0`;
+        },
+
 
     }
 
@@ -88,7 +93,7 @@ var vue = new Vue({
                 },
                 orbitPosition: {
                     distance: 1000,
-                    phi: 0.8    ,
+                    phi: 0.8,
                     theta: 0.3,
                 }
             },
