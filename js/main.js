@@ -26,10 +26,10 @@ Vue.component('pcp-disk', {
             },
         };
     },
-    template: '<vgl-group :position="offsetDisk(index)">\n\t<vgl-text-geometry :name="computeTextId(index)" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="label.height" :text="diskName"></vgl-text-geometry>\n' +
-        '<vgl-mesh :geometry="computeTextId(index)" material="std" rotation="-1.5708 0 0"></vgl-mesh>\n' +
-        ' <vgl-box-geometry :name="computeBoxId(index)" :width="diskWidth" :height="diskHeight()" :depth="diskDepth"/>' +
-        '\'<vgl-mesh :geometry="computeBoxId(index)" material="std" :position=boxPosition()></vgl-mesh>\\' +
+    template: '<vgl-group :position="offsetDisk(index)">\n\t<vgl-text-geometry :name="textId" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="label.height" :text="diskName"></vgl-text-geometry>\n' +
+        '<vgl-mesh :geometry="textId" material="std" rotation="-1.5708 0 0"></vgl-mesh>\n' +
+        ' <vgl-box-geometry :name="boxId" :width="diskWidth" :height="diskHeight()" :depth="diskDepth"/>' +
+        '\'<vgl-mesh :geometry="boxId" material="std" :position=boxPosition()></vgl-mesh>\\' +
         '</vgl-group>',
 
     computed: {
@@ -39,15 +39,15 @@ Vue.component('pcp-disk', {
         diskDepth: function () {
             return 100;
         },
+        textId: function () {
+            return `text.${this.index}`;
+        },
+        boxId: function () {
+            return `box.${this.index}`;
+        },
 
     },
     methods: {
-        computeTextId: function (index) {
-            return `text.${index}`;
-        },
-        computeBoxId: function (index) {
-            return "`box." + index;
-        },
         offsetDisk: function (index) {
             return "0 0 " + (index * 200) + "  ";
         },
