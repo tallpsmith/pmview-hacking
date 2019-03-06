@@ -17,21 +17,8 @@
             >
             </vgl-grid-helper>
 
-            <template v-for="(disk,index) in disks">
-                <vgl-text-geometry :name="disk.text"
-                                   font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json"
-                                   :height="disk.lheight"
-                                   :text="disk.text"></vgl-text-geometry>
-
-                <vgl-box-geometry :name="`box.${index}`" :width="disk.width" :height="disk.height"
-                                  :depth="disk.depth"/>
-
-                <vgl-group :name="`group.${index}`" :position="offsetDisk(index)">
-                    <vgl-mesh :geometry="disk.text" material="std" rotation="-1.5708 0 0"></vgl-mesh>
-                    <vgl-mesh :geometry="`box.${index}`" material="std" :position="calculateBoxPosition(disk)"
-                              :rotation="calculateRotation()"></vgl-mesh>
-                </vgl-group>
-            </template>
+            <pcp-disk v-for="(disk,index) in disks" v-bind:key="index" v-bind:index="index"
+                      v-bind:disk-name="disk.text" v-bind:utilization="disk.utilization"></pcp-disk>
 
             <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
             <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>

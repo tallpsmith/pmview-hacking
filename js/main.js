@@ -12,18 +12,58 @@ Object.keys(VueGL).forEach(name => {
     Vue.component(name, VueGL[name]);
 });
 
+Vue.component('pcp-disk', {
+    props: {
+        index: Number,
+        diskName: String,
+        utilization: Number,
+    },
+    data: function () {
+        return {
+            position: "0 0 0",
+            label: {
+                height: 5
+            },
+        };
+    },
+    template: '<vgl-group :position="offsetDisk(index)">\n\t<vgl-text-geometry :name="computeTextId(index)" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="label.height" :text="diskName"></vgl-text-geometry>\n' +
+        '<vgl-mesh :geometry="computeTextId(index)" material="std" rotation="-1.5708 0 0"></vgl-mesh>\n' +
+        ' <vgl-box-geometry :name="computeBoxId(index)" :width="computeDiskWidth()" :height="computeDiskHeight()" :depth="computeDiskDepth()"/>' +
+        '\'<vgl-mesh :geometry="computeBoxId(index)" material="std" :position=computeBoxPosition()></vgl-mesh>\\' +
+        '</vgl-group>',
+    methods: {
+        computeTextId: function(index) {
+            return `text.${index}`;
+        },
+        computeBoxId: function(index) {
+            return "`box." + index;
+        },
+
+        computeDiskWidth: function () {
+            return 100;
+        },
+        computeDiskDepth: function () {
+            return 100;
+        },
+        computeDiskHeight: function () {
+            const maxHeight = 500;
+            return this.utilization * maxHeight;
+        },
+        computeBoxPosition: function () {
+            diskHeight = this.computeDiskHeight() /2 ;
+            return `750 ${diskHeight} 0`;
+        },
+        offsetDisk: function (index) {
+            return "0 0 " + (index * 200) + "  ";
+        },
+
+    }
+
+});
+
 var vue = new Vue({
         el: '#app',
         methods: {
-            calculateBoxPosition: function (disk) {
-                return `750 ${disk.height / 2} 0`;
-            },
-            calculateRotation: function () {
-                return this.rotator + " 0 0";
-            },
-            offsetDisk: function (index) {
-                return "0 0 " + (index * 200) + "  ";
-            },
             cameraPosition: function () {
                 return this.camera.orbitPosition.distance + " " + this.camera.orbitPosition.phi + " " + this.camera.orbitPosition.theta;
             },
@@ -32,7 +72,6 @@ var vue = new Vue({
             },
         },
         data: {
-            rotator: 0.0,
             axishelper: {
                 size: 500
             },
@@ -43,37 +82,29 @@ var vue = new Vue({
                     z: 0
                 },
                 orbitPosition: {
-                    distance: 1500,
-                    phi: 1.3,
+                    distance: 1000,
+                    phi: 0.8    ,
                     theta: 0.3,
                 }
             },
             disks: [
                 {
-                    "lheight": 5,
-                    "text": '/dev/sda',
-                    "width": 100,
-                    "height": 10,
-                    "depth": 100,
+                    text: '/dev/sda',
+                    utilization: 0.5,
                 },
                 {
-                    "lheight": 5,
-                    "text": '/dev/sdb',
-                    "width": 100,
-                    "height": 100,
-                    "depth": 100,
+                    text: '/dev/sdb',
+                    utilization: 0.7,
                 },
                 {
-                    "lheight": 5,
-                    "text": '/dev/sdc',
-                    "width": 100,
-                    "height": 50,
-                    "depth": 100,
+                    text: '/dev/sdc',
+                    utilization: 1.0,
                 }
             ]
         },
     })
 ;
+
 
 autoPlay(true);
 
