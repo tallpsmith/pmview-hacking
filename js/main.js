@@ -70,6 +70,11 @@ var vue = new Vue({
             cameraTarget: function () {
                 return this.camera.orbitTarget.x + " " + this.camera.orbitTarget.y + " " + this.camera.orbitTarget.z;
             },
+            startAnimation: function () {
+                const targetSpherical = new three.Spherical(0, 1.3, 3.14 * 2);
+                var cameraTween = new Tween(this.camera.orbitPosition).to(targetSpherical, 5000);
+                cameraTween.repeat(3).start();
+            }
         },
         data: {
             axishelper: {
@@ -112,16 +117,14 @@ let updateCallback = ({height}) => {
     vue.disks[0].height = height;
 };
 
-const targetSpherical = new three.Spherical(0, 1.3, 3.14 * 2);
-var cameraTween = new Tween(vue.camera.orbitPosition).to(targetSpherical, 5000);
 
 var boxTween = new Tween({height: 0})
     .to({height: 100}, 1000)
     .on('update', updateCallback)
 ;
 
-boxTween.repeat(2).yoyo(true).start();
-cameraTween.repeat(3).start();
+//boxTween.repeat(2).yoyo(true).start();
+
 
 function renderScene() {
     requestAnimationFrame(renderScene);
