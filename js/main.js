@@ -34,12 +34,17 @@ var vue = new Vue({
             selectSeries: function (selectedSeries) {
                 this.selectedSeries = selectedSeries;
                 var data = this;
-                new PMProxy('localhost').metricName(this.selectedSeries).then(function(response){
-                    data.metricName = response.data[0].name;
+                let pmProxy = new PMProxy('localhost');
+                pmProxy.metricName(this.selectedSeries).then(function(response){
+                    data.metric = response.data[0];
                 });
-                new PMProxy('localhost').instanceNames(this.selectedSeries).then(function(response){
+                pmProxy.instanceNames(this.selectedSeries).then(function(response){
                     data.instances = response.data
                 });
+                pmProxy.seriesMetricValues(this.metric.name).then(function (response) {
+                    console.log(response);
+                    data.metricValues = response.data;
+                })
             },
             querySeries: function () {
                 var data = this;
@@ -70,7 +75,8 @@ var vue = new Vue({
             pmseries:[],
             instances: [],
             selectedSeries: '<no series selected>',
-            metricName: '<no series selected>',
+            metric: '<no series selected>',
+            metricValues: [],
             disks: [
                 {
                     text: '/dev/sda',
