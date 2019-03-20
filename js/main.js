@@ -2,6 +2,8 @@ var three = require('three');
 var Vue = require('vue/dist/vue.js');
 var VueGL = require('vue-gl');
 var pcpDisk = require('./lib/pcp-disk');
+var PMProxy = require('./lib/pmproxy');
+require('bootstrap');
 
 // TODO need to switch this to be a module so I can use
 // import
@@ -28,7 +30,25 @@ var vue = new Vue({
                 const targetSpherical = new three.Spherical(0, 1.3, 3.14 * 2);
                 var cameraTween = new Tween(this.camera.orbitPosition).to(targetSpherical, 5000);
                 cameraTween.repeat(3).start();
+            },
+            selectSeries: function (selectedSeries) {
+                this.selectedSeries = selectedSeries;
+                var data = this;
+                new PMProxy('localhost').metricName(this.selectedSeries).then(function(response){
+                    data.metricName = response.data[0].name;
+                });
+                new PMProxy('localhost').instanceNames(this.selectedSeries).then(function(response){
+                    data.instances = response.data
+                });
+            },
+            querySeries: function () {
+                var data = this;
+                new PMProxy('localhost').setExpression(data.seriesQuery).seriesQuery().then(function(response){
+                    data.pmseries = response.data;
+                });
             }
+
+
         },
         data: {
             axishelper: {
@@ -46,6 +66,11 @@ var vue = new Vue({
                     theta: 0.3,
                 }
             },
+            seriesQuery: 'disk.dev.*',
+            pmseries:[],
+            instances: [],
+            selectedSeries: '<no series selected>',
+            metricName: '<no series selected>',
             disks: [
                 {
                     text: '/dev/sda',
@@ -61,6 +86,9 @@ var vue = new Vue({
                 }
             ]
         },
+        mounted: function() {
+            this.querySeries();
+        }
     })
 ;
 
@@ -72,3 +100,4 @@ function renderScene() {
     vue.$refs.renderer.render();
 };
 renderScene();
+
