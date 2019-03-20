@@ -1,42 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <title>pmview hacking</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
 
 </head>
 
 <body>
 <div id="app">
+    <form class="form-inline">
+        <div class="container">
+            <nav class="navbar navbar-light bg-light">
+                <a class="navbar-brand" href="#">
+                    <img src="https://avatars3.githubusercontent.com/u/8467970?s=200&v=4" width="50" height="50"
+                         alt="">
+                    pmview
+                </a>
+                <div class="navbar-nav">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <div class="input-group-prepend"><span class="input-group-text">Metric Query:</span>
+                            </div>
+                            <input type="text" id="seriesQuery" class="form-control" v-model="seriesQuery"
+                                   placeholder="pmseries query"/>
+                            <div class="input-group-append">
+                                <button id="btnSeriesQuery" v-on:click="querySeries()" class="btn btn-primary"
+                                        type="submit">Query
+                                </button>
+                            </div>
 
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-auto ">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ selectedSeries }}
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" v-for="series in pmseries"
+                               v-on:click="selectSeries(series)">{{ series }}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    Metric Name: {{ metric.name }}
+                </div>
+                <div class="col-auto">{{ metricValues }}</div>
+                <div class="col-auto">
+                    <ul id="instances" class="list-group">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button"
+                                    id="instanceList"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                < instances >
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="instanceList">
+                                <a class="dropdown-item" href="#" v-for="instance in instances"
+                                >{{ instance.name }}</a>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-    <aside class="control-panel">
-        <ul id="disksUI">
-            <li v-for="(disk,index) in disks">
-                <label>{{ disk.text }}<input type="range" min="0.0" max="1.0" step="0.1" v-model.number="disk.utilization"/></label>
-            </li>
-        </ul>
-        <button id="startAnimation" v-on:click="startAnimation()">Start Animation</button>
-    </aside>
+        <div class="container">
+            <div class="row">
+                <div class="col-auto">
+                    <button id="startAnimation" class="button btn-secondary" v-on:click="startAnimation()">Start
+                        Animation
+                    </button>
+                </div>
+            </div>
+            <div class="row border">
+                <div class="col-10">
+                    <vgl-renderer ref="renderer" antialias style="height: 80vh;">
+                        <vgl-scene ref="scene">
+                            <vgl-axes-helper :size="axishelper.size"></vgl-axes-helper>
+                            <vgl-grid-helper
+                                    size="5000"
+                                    divisions="25"
+                            >
+                            </vgl-grid-helper>
 
-    <vgl-renderer ref="renderer" antialias style="height: 80vh;">
-        <vgl-scene ref="scene">
-            <vgl-axes-helper :size="axishelper.size"></vgl-axes-helper>
-            <vgl-grid-helper
-                    size="5000"
-                    divisions="25"
-            >
-            </vgl-grid-helper>
+                            <pcp-disk v-for="(disk,index) in disks" v-bind:key="index" v-bind:index="index"
+                                      v-bind:disk-name="disk.text" v-bind:utilization="disk.utilization"></pcp-disk>
 
-            <pcp-disk v-for="(disk,index) in disks" v-bind:key="index" v-bind:index="index"
-                      v-bind:disk-name="disk.text" v-bind:utilization="disk.utilization"></pcp-disk>
-
-            <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
-            <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
-            <vgl-directional-light position="0 1 2"></vgl-directional-light>
-        </vgl-scene>
-        <vgl-perspective-camera ref="camera" :orbit-target="cameraTarget()" :orbit-position="cameraPosition()"></vgl-perspective-camera>
-    </vgl-renderer>
-
+                            <vgl-mesh-standard-material name="std"></vgl-mesh-standard-material>
+                            <vgl-ambient-light color="#ffeecc"></vgl-ambient-light>
+                            <vgl-directional-light position="0 1 2"></vgl-directional-light>
+                        </vgl-scene>
+                        <vgl-perspective-camera ref="camera" :orbit-target="cameraTarget()"
+                                                :orbit-position="cameraPosition()"></vgl-perspective-camera>
+                    </vgl-renderer>
+                </div>
+                <div class="col-2 border">
+                    <ul id="disksUI" class="list-group">
+                        <li v-for="(disk,index) in disks" class="list-group-item">
+                            <div class="form-group">
+                                <label>{{ disk.text }} <input class="form-control-range" type="range" min="0.0"
+                                                              max="1.0"
+                                                              step="0.1"
+                                                              v-model.number="disk.utilization"/></label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
 
 </div>
 <script type="text/javascript" src="static/bundle.js"></script>
