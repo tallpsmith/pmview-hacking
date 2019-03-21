@@ -34,22 +34,31 @@ var vue = new Vue({
             selectSeries: function (selectedSeries) {
                 this.selectedSeries = selectedSeries;
                 var data = this;
-                let pmProxy = new PMProxy('localhost');
-                pmProxy.metricName(this.selectedSeries).then(function(response){
-                    data.metric = response.data[0];
-                });
-                pmProxy.instanceNames(this.selectedSeries).then(function(response){
+                let pmProxy = new PMProxy(this.pmproxy.hostName, this.pmproxy.port);
+                pmProxy.instanceNames(this.selectedSeries.seriesId).then(function (response) {
                     data.instances = response.data
                 });
-                pmProxy.seriesMetricValues(this.metric.name).then(function (response) {
-                    console.log(response);
+                pmProxy.seriesMetricValues(this.selectedSeries.metricName).then(function (response) {
                     data.metricValues = response.data;
                 })
             },
             querySeries: function () {
                 var data = this;
-                new PMProxy('localhost').setExpression(data.seriesQuery).seriesQuery().then(function(response){
-                    data.pmseries = response.data;
+                let pmProxy = new PMProxy(this.pmproxy.hostName, this.pmproxy.port);
+                pmProxy.seriesQuery(data.seriesQuery).then(function (response) {
+                    data.pmseries = response.data.map(seriesId => {
+                        return {seriesId: seriesId, metricName: '<unknown>'}
+                    });
+                    // mega inefficient, but..
+                    data.pmseries.forEach(function (series) {
+                        pmProxy.metricName(series.seriesId).then(function (response) {
+                            if (response.data.length == 0) {
+                                return;
+                            }
+                            series.metricName = response.data[0].name;
+                        });
+                    });
+
                 });
             }
 
@@ -71,10 +80,15 @@ var vue = new Vue({
                     theta: 0.3,
                 }
             },
+            pmproxy: {
+                hostName: "localhost",
+                port: 44322
+
+            },
             seriesQuery: 'disk.dev.*',
-            pmseries:[],
+            pmseries: [],
             instances: [],
-            selectedSeries: '<no series selected>',
+            selectedSeries: {metricName:'<no metric selected>'},
             metric: '<no series selected>',
             metricValues: [],
             disks: [
@@ -92,7 +106,7 @@ var vue = new Vue({
                 }
             ]
         },
-        mounted: function() {
+        mounted: function () {
             this.querySeries();
         }
     })

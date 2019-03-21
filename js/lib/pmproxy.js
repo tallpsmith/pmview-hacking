@@ -9,15 +9,10 @@ function PMProxy(host = 'localhost', port = 44322) {
     });
 
     return {
-        expression: '',
-        setExpression: function (expression) {
-            this.expression = expression;
-            return this;
+        seriesQuery: function (seriesExpression) {
+            return pmproxyAxios.get(`/series/query?expr=${seriesExpression}`);
         },
-        seriesQuery: function () {
-            return pmproxyAxios.get('/series/query?expr=' + this.expression);
-        },
-        seriesMetricValues: function (metric, samples = 1) {
+        seriesMetricValues: function (metric, samples = 10) {
             return pmproxyAxios.get(encodeURI(`/series/query?expr=${metric}[samples:${samples}]`));
         },
         metricName: function (series) {
