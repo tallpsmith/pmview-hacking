@@ -30,6 +30,11 @@ var vue = new Vue({
                 const targetSpherical = new three.Spherical(0, 1.3, 3.14 * 2);
                 var cameraTween = new Tween(this.camera.orbitPosition).to(targetSpherical, 5000);
                 cameraTween.repeat(3).start();
+                this.disks.forEach(function (disk) {
+                    console.log(disk);
+                    new Tween(disk).to({utilization: 1.0}, 5000).repeat(5).start();
+
+                });
             },
             selectSeries: function (selectedSeries) {
                 this.selectedSeries = selectedSeries;
@@ -43,7 +48,6 @@ var vue = new Vue({
                 })
             },
             selectInstance: function (instance) {
-                console.log(instance);
                 this.selectedInstance = instance;
             },
             querySeries: function () {
@@ -64,6 +68,15 @@ var vue = new Vue({
                     });
 
                 });
+            },
+            addDisk() {
+                console.log(this.disks);
+                let newDisk = {text: this.selectedInstance.name, utilization: 0.5};
+                if (this.disks.length > 0) {
+                    this.disks = [this.disks, newDisk];
+                } else {
+                    this.disks = [newDisk];
+                }
             }
 
 
@@ -74,7 +87,7 @@ var vue = new Vue({
             },
             camera: {
                 orbitTarget: {
-                    x: 0,
+                    x: 200,
                     y: 0,
                     z: 0
                 },
@@ -92,24 +105,11 @@ var vue = new Vue({
             seriesQuery: 'disk.dev.*',
             pmseries: [],
             instances: [],
-            selectedSeries: {metricName:'<no metric selected>'},
+            selectedSeries: {metricName: '<no metric selected>'},
             metric: '<no series selected>',
             metricValues: [],
             selectedInstance: {name: '<no selected instance>'},
-            disks: [
-                {
-                    text: '/dev/sda',
-                    utilization: 0.5,
-                },
-                {
-                    text: '/dev/sdb',
-                    utilization: 0.7,
-                },
-                {
-                    text: '/dev/sdc',
-                    utilization: 1.0,
-                }
-            ]
+            disks: []
         },
         mounted: function () {
             this.querySeries();

@@ -18,7 +18,7 @@ Vue.component('pcp-disk', {
     template: '<vgl-group :position="diskOffset">\n\t<vgl-text-geometry :name="textId" font="node_modules/three/examples/fonts/helvetiker_regular.typeface.json" :height="label.height" :text="diskName"></vgl-text-geometry>\n' +
         '<vgl-mesh :geometry="textId" material="std" rotation="-1.5708 0 0"></vgl-mesh>\n' +
         ' <vgl-box-geometry :name="boxId" :width="diskWidth" :height="diskHeight()" :depth="diskDepth"/>' +
-        '\'<vgl-mesh :geometry="boxId" material="std" :position=boxPosition()></vgl-mesh>\\' +
+        '\'<vgl-mesh :geometry="boxId" :material="boxColour" :position=boxPosition() ></vgl-mesh>\\' +
         '</vgl-group>',
 
     computed: {
@@ -37,10 +37,12 @@ Vue.component('pcp-disk', {
         diskOffset: function () {
             return "0 0 " + (this.index * 200) + "  ";
         },
+        boxColour: function () {
+            let colour = this.utilization > 0.85 ? "hot" : (this.utilization > 0.65 ? "warm" : "std");
+            return colour;
+        }
     },
     methods: {
-
-
         diskHeight: function () {
             const maxHeight = 500;
             return this.utilization * maxHeight;
