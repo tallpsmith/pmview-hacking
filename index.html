@@ -3,6 +3,14 @@
 <head>
     <title>pmview hacking</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <style>
+        .container-fluid {
+            border: 0px solid #dee2e6 !important;
+        }
+        .container {
+            border: 1px solid #dee2e6 !important;
+        }
+    </style>
 
 </head>
 
@@ -69,7 +77,8 @@
                                 {{ selectedInstance.name }}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="instanceList">
-                                <a class="dropdown-item" href="#" v-for="instance in instances" v-on:click="selectInstance(instance)"
+                                <a class="dropdown-item" href="#" v-for="instance in instances"
+                                   v-on:click="selectInstance(instance)"
                                 >{{ instance.name }}</a>
                             </div>
                         </div>
@@ -101,17 +110,28 @@
             </div>
         </div>
 
-        <div class="container-fluid border">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-auto">
                     <button id="startAnimation" class="btn btn-success" v-on:click="startAnimation()">Start
                         Animation
                     </button>
                 </div>
+                <div class="form-group row col-10">
+                    <div class="col-auto input-group" v-for="(disk,index) in disks">
+                        <div class="input-group-prepend"><span
+                                class="input-group-text">{{ disk.text }}</span>
+                        </div>
+                        <input class="form-control-range" type="range" min="0.0"
+                               max="1.0"
+                               step="0.1"
+                               v-model.number="disk.utilization"/>
+                    </div>
+                </div>
             </div>
             <div class="row">
-                <div class="col-10">
-                    <vgl-renderer ref="renderer" antialias style="height: 80vh;">
+                <div class="col-12">
+                    <vgl-renderer ref="renderer" antialias style="height: 80vh; width: 80%">
                         <vgl-scene ref="scene">
                             <vgl-axes-helper :size="axishelper.size"></vgl-axes-helper>
                             <vgl-grid-helper
@@ -130,18 +150,7 @@
                         <vgl-perspective-camera ref="camera" :orbit-target="cameraTarget()"
                                                 :orbit-position="cameraPosition()"></vgl-perspective-camera>
                     </vgl-renderer>
-                </div>
-                <div class="col-2">
-                    <ul id="disksUI" class="list-group">
-                        <li v-for="(disk,index) in disks" class="list-group-item">
-                            <div class="form-group">
-                                <label>{{ disk.text }} <input class="form-control-range" type="range" min="0.0"
-                                                              max="1.0"
-                                                              step="0.1"
-                                                              v-model.number="disk.utilization"/></label>
-                            </div>
-                        </li>
-                    </ul>
+
                 </div>
             </div>
         </div>
