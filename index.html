@@ -66,10 +66,10 @@
                             <button class="btn btn-secondary dropdown-toggle" type="button"
                                     id="instanceList"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                < SELECTED INSTANCE TBD >
+                                {{ selectedInstance.name }}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="instanceList">
-                                <a class="dropdown-item" href="#" v-for="instance in instances"
+                                <a class="dropdown-item" href="#" v-for="instance in instances" v-on:click="selectInstance(instance)"
                                 >{{ instance.name }}</a>
                             </div>
                         </div>
@@ -84,12 +84,14 @@
                         <thead class="thead-light">
                         <tr>
                             <th scope="col">Timestamp</th>
+                            <th scope="col">Instance Id</th>
                             <th scope="col">Metric Value</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="metricValue in metricValues">
                             <th scope="row">{{metricValue.timestamp }}</th>
+                            <th scope="row">{{metricValue.instance}}</th>
                             <th scope="row">{{metricValue.value}}</th>
                         </tr>
                         </tbody>

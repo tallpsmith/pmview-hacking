@@ -42,6 +42,10 @@ var vue = new Vue({
                     data.metricValues = response.data;
                 })
             },
+            selectInstance: function (instance) {
+                console.log(instance);
+                this.selectedInstance = instance;
+            },
             querySeries: function () {
                 var data = this;
                 let pmProxy = new PMProxy(this.pmproxy.hostName, this.pmproxy.port);
@@ -91,6 +95,7 @@ var vue = new Vue({
             selectedSeries: {metricName:'<no metric selected>'},
             metric: '<no series selected>',
             metricValues: [],
+            selectedInstance: {name: '<no selected instance>'},
             disks: [
                 {
                     text: '/dev/sda',
